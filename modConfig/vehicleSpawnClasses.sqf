@@ -10,6 +10,70 @@ A3W_smallVehicles =
 	["B_Quadbike_01_F", "O_Quadbike_01_F", "I_Quadbike_01_F", "I_G_Quadbike_01_F"]
 ];
 
+heavyTurrets = [
+	"B_Radar_System_01_F", // MPQ-105 Radar
+	"B_SAM_System_03_F", // MIM-105 Defender
+	"B_SAM_System_02_F", // Mk21 Centurion
+	"B_SAM_System_01_F", // Mk49 Spartan
+	"B_AAA_System_01_F", // Praetorian 1C
+	"O_Radar_System_02_F", // R-750 Cronus Radar 
+	"O_SAM_System_04_F" // S-750 Rhea
+];
+
+tier1Vehicles = [
+
+	// BLUFOR
+	"B_MBT_01_cannon_F", // m2a1 slammer
+	"B_MBT_01_TUSK_F", // m2a1 slammer TUSK
+	"B_MBT_01_mlrs_F", // M5 Sandstorm
+	"B_MBT_01_arty_F", // M4 Scorcher
+	"B_Plane_CAS_01_F", // A-164 Wipeout
+	"B_Plane_Fighter_01_F", // F/A-181 Black Wasp
+	"B_Plane_Fighter_01_Stealth_F", // F/A-181 Black Wasp Stealth
+	
+	// OPFOR
+	"O_MBT_02_cannon_F", // T-100 varsuk
+	"O_MBT_04_cannon_F", // T-140 angara
+	"O_MBT_04_command_F", // T-140K
+	"O_MBT_02_arty_F", // 2S9 Sochor
+	"O_Plane_CAS_02_dynamicLoadout_F", // To-199 Neophron
+	"O_Plane_Fighter_02_F", // To-201 Shikra
+	"O_Plane_Fighter_02_Stealth_F" // To-201 Shikra stealth
+];
+
+tier2Vehicles = [
+
+	// BLUFOR
+	"B_APC_Tracked_01_AA_F", // IFV-6a Cheetah
+	"B_APC_Wheeled_01_cannon_F", // AMV-7 Marshall 
+	"B_APC_Tracked_01_CRV_F", // CRV-6e Bobcat 
+	"B_APC_Tracked_01_rcws_F", // IFV-6c Panther
+	"B_AFV_Wheeled_01_cannon_F", // Rhino MGS 
+	"B_AFV_Wheeled_01_up_cannon_F", // Rhino MGS UP
+
+	// OPFOR
+	"O_APC_Tracked_02_AA_F", // ZSU-39 Tigris
+	"O_APC_Tracked_02_cannon_F", // BTR-K Kamish
+	"O_APC_Wheeled_02_rcws_v2_F" // MSE-3 Marid
+];
+
+tier3Vehicles = [
+
+	// BLUFOR
+	"B_MRAP_01_F", // Hunter
+	"B_MRAP_01_gmg_F", // Hunter GMG
+	"B_MRAP_01_hmg_F", // Hunter HMG
+	"B_LSV_01_AT_F", // Prowler AT 
+	"B_LSV_01_armed_F", // Prowler HMG,
+	"B_LSV_01_unarmed_F", // Prowler unarmed
+
+	// OPFOR
+	"O_MRAP_02_F", // Ifrit 
+	"O_MRAP_02_hmg_F", // Ifrit GMG
+	"O_MRAP_02_gmg_F" // Ifrit HMG
+];
+
+
 //Civilian Vehicle List - Random Spawns
 civilianVehicles =
 [

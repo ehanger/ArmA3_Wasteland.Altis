@@ -10,6 +10,17 @@ if (!isServer) exitWith {};
 
 private ["_createRandomVehicle", "_totalRadius", "_carPerMeters", "_townThreads", "_startTime"];
 
+_regularSpawnedVehicleTypes =
+	[
+		[tier2Vehicles, 0.4],
+		[tier3Vehicles, 0.6]
+	] call fn_selectRandomWeightedPairs call fn_selectRandomNested;
+
+_specialSpawnedVehicleTypes =
+	[
+		[tier1Vehicles, 1.0]
+	] call fn_selectRandomWeightedPairs call fn_selectRandomNested;
+
 _createRandomVehicle =
 {
 	private ["_pos", "_minrad", "_maxrad", "_counter", "_vehicleType", "_mindist"];
@@ -17,14 +28,7 @@ _createRandomVehicle =
 	_minrad = _this select 1;
 	_maxrad = _this select 2;
 	_counter = _this select 3;
-
-	_vehicleType =
-	[
-		[A3W_smallVehicles, 0.30],
-		[civilianVehicles, 0.40],
-		[lightMilitaryVehicles, 0.15],
-		[mediumMilitaryVehicles, 0.15]
-	] call fn_selectRandomWeightedPairs call fn_selectRandomNested;
+	_vehicleType = _this select 4
 
 	if (_vehicleType isKindOf "Quadbike_01_base_F") then {
 		_mindist = 1.5;
@@ -73,7 +77,7 @@ _startTime = diag_tickTime;
 		while {_lcounter < _vehammount} do
 		{
 			_lpos = _pos vectorAdd ([[_maxrad, 0, 0], _langle] call BIS_fnc_rotateVector2D);
-			[_lpos, _minrad, _maxrad, A3W_vehicleSpawning_townVehCount] call _createRandomVehicle;
+			[_lpos, _minrad, _maxrad, A3W_vehicleSpawning_townVehCount, _regularSpawnedVehicleTypes] call _createRandomVehicle;
 			//_minrad = _minrad + 15;
 			//_maxrad = _maxrad + 15;
 			_langle = _langle + _angleIncr;
@@ -83,6 +87,39 @@ _startTime = diag_tickTime;
 		//diag_log format["WASTELAND DEBUG - spawned %1 Vehicles in: %2",_lcounter,_townname];
 	});
 } forEach (call citylist);
+
+{
+	_townThreads pushBack ([_x, _carPerMeters, _createRandomVehicle] spawn
+	{
+		_town = _this select 0;
+		_carPerMeters = _this select 1;
+		_createRandomVehicle = _this select 2;
+
+		_pos = getMarkerPos (_town select 0);
+		_tradius = _town select 1;
+		_townname = _town select 2;
+		_vehammount = 1 max round (_tradius * _carPerMeters); // Calculates the quantity of vehicle based on the town's radius
+		_angleIncr = 360 / _vehammount;
+		_langle = random _angleIncr;
+		//_minrad = 15;
+		//_maxrad = 30;
+		_minrad = 0;
+		_maxrad = _tradius / 2;
+		_lcounter = 0;
+
+		while {_lcounter < _vehammount} do
+		{
+			_lpos = _pos vectorAdd ([[_maxrad, 0, 0], _langle] call BIS_fnc_rotateVector2D);
+			[_lpos, _minrad, _maxrad, A3W_vehicleSpawning_townVehCount, _specialSpawnedVehicleTypes] call _createRandomVehicle;
+			//_minrad = _minrad + 15;
+			//_maxrad = _maxrad + 15;
+			_langle = _langle + _angleIncr;
+			A3W_vehicleSpawning_townVehCount = A3W_vehicleSpawning_townVehCount + 1;
+			_lcounter = _lcounter + 1;
+		};
+		//diag_log format["WASTELAND DEBUG - spawned %1 Vehicles in: %2",_lcounter,_townname];
+	});
+} forEach (call tier1ItemLocations);
 
 {
 	//diag_log format ["Waiting town vehicle spawner #%1", _forEachIndex + 1];
