@@ -11,7 +11,7 @@
 
 // Towns and cities array
 cityList = compileFinal preprocessFileLineNumbers "mapConfig\towns.sqf";
-tier1ItemList = compileFinal preprocessFileLineNumbers "mapConfig\tier1ItemLocations.sqf";
+tier1ItemLocationList = compileFinal preprocessFileLineNumbers "mapConfig\tier1ItemLocations.sqf";
 
 config_items_jerrycans_max = compileFinal "1";
 config_items_syphon_hose_max = compileFinal "1";
