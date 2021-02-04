@@ -20,6 +20,15 @@ heavyTurrets = [
 	"O_SAM_System_04_F" // S-750 Rhea
 ];
 
+tier1FixedWingAircraft = [
+	"O_Plane_CAS_02_dynamicLoadout_F", // To-199 Neophron
+	"O_Plane_Fighter_02_F", // To-201 Shikra
+	"O_Plane_Fighter_02_Stealth_F", // To-201 Shikra stealth
+	"B_Plane_CAS_01_F", // A-164 Wipeout
+	"B_Plane_Fighter_01_F", // F/A-181 Black Wasp
+	"B_Plane_Fighter_01_Stealth_F" // F/A-181 Black Wasp Stealth
+];
+
 tier1Vehicles = [
 
 	// BLUFOR
@@ -27,18 +36,22 @@ tier1Vehicles = [
 	"B_MBT_01_TUSK_F", // m2a1 slammer TUSK
 	"B_MBT_01_mlrs_F", // M5 Sandstorm
 	"B_MBT_01_arty_F", // M4 Scorcher
-	"B_Plane_CAS_01_F", // A-164 Wipeout
-	"B_Plane_Fighter_01_F", // F/A-181 Black Wasp
-	"B_Plane_Fighter_01_Stealth_F", // F/A-181 Black Wasp Stealth
+	"B_Heli_Light_01_dynamicLoadout_F", // Pawnee
+	"B_Heli_Attack_01_dynamicLoadout_F", // Blackfoot
+	"B_Heli_Transport_03_F", // Huron
+	"B_Heli_Transport_03_unarmed_F", // Huron
+	"B_Heli_Transport_01_F", // Ghosthawk
 	
 	// OPFOR
 	"O_MBT_02_cannon_F", // T-100 varsuk
 	"O_MBT_04_cannon_F", // T-140 angara
 	"O_MBT_04_command_F", // T-140K
 	"O_MBT_02_arty_F", // 2S9 Sochor
-	"O_Plane_CAS_02_dynamicLoadout_F", // To-199 Neophron
-	"O_Plane_Fighter_02_F", // To-201 Shikra
-	"O_Plane_Fighter_02_Stealth_F" // To-201 Shikra stealth
+	"O_Heli_Transport_04_F", // Tari
+	"O_Heli_Light_02_dynamicLoadout_F", // Orca
+	"O_Heli_Attack_02_dynamicLoadout_F", // Kajman
+	"B_Heli_Transport_03_unarmed_F", // Huron
+	"O_Heli_Light_02_unarmed_F" // Orca unarmed
 ];
 
 tier2Vehicles = [
@@ -69,8 +82,8 @@ tier3Vehicles = [
 
 	// OPFOR
 	"O_MRAP_02_F", // Ifrit 
-	"O_MRAP_02_hmg_F", // Ifrit GMG
-	"O_MRAP_02_gmg_F" // Ifrit HMG
+	"O_MRAP_02_hmg_F", // Ifrit HMG
+	"O_MRAP_02_gmg_F" // Ifrit GMG
 ];
 
 
