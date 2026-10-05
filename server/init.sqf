@@ -494,7 +494,6 @@ if (["A3W_serverSpawning"] call isConfigOn) then
 	if (["A3W_vehicleSpawning"] call isConfigOn) then
 	{
 		call compile preprocessFileLineNumbers "server\functions\vehicleSpawning.sqf";
-		call compile preprocessFileLineNumbers "server\functions\specialVehicleSpawning.sqf";
 	};
 
 	if (["A3W_planeSpawning"] call isConfigOn) then
