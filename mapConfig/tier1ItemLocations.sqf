@@ -5,6 +5,5 @@
 //	@file Author: ehanger
 
 [
-	["Town_1", 400, "Kavala"],
-	["Test_Spawn", 400, "Gravia Air Base"]
+	createMarker ["Test_Spawn", [15000.0, 16500.0, 18.0]]
 ]
