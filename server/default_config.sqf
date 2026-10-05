@@ -127,6 +127,7 @@ A3W_hcObjSavingID = 1;             // ID of the headless client in charge of obj
 // HC saving only works with extDB and iniDB. It does NOT work with profileNamespace, as loading takes place on the server and saving on the HC, so loading will fail as profile files are separate.
 
 // Server spawn settings
+A3W_scavengerMode = 1;            // Fresh scavenged equipment each restart; see server\scavenging\README.md
 A3W_serverSpawning = 1;            // Vehicle, object, and loot spawning (0 = no, 1 = yes)
 A3W_vehicleSpawning = 1;           // If serverSpawning = 1, spawn vehicles in towns (0 = no, 1 = yes)
 A3W_vehicleQuantity = 200;         // Approximate number of land vehicles to be spawned in towns

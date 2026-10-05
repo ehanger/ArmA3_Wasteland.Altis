@@ -35,13 +35,13 @@ _player linkItem "NVGoggles";
 
 _player addBackpack "B_AssaultPack_rgr";
 
+// Starter pistol: one loaded magazine and two spare magazines.
 _player addMagazine "9Rnd_45ACP_Mag";
 _player addWeapon "hgun_ACPC2_F";
 _player addMagazine "9Rnd_45ACP_Mag";
 _player addMagazine "9Rnd_45ACP_Mag";
-_player addMagazine "9Rnd_45ACP_Mag";
-_player addItem "FirstAidKit";
 _player selectWeapon "hgun_ACPC2_F";
+_player addItem "FirstAidKit";
 
 switch (true) do
 {

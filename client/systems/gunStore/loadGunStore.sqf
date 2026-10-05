@@ -10,6 +10,8 @@
 #include "dialog\gunstoreDefines.sqf";
 disableSerialization;
 
+if (["A3W_scavengerMode"] call isConfigOn) exitWith { hint "Gun stores are closed. Scavenge supply crates." };
+
 private ["_gunshopDialog", "_Dialog", "_playerMoney", "_owner"];
 _gunshopDialog = createDialog "gunshopd";
 

@@ -8,6 +8,7 @@
 //	@file Args:
 
 //Creates the markers around vehicle stores.
+if (["A3W_scavengerMode"] call isConfigOn) exitWith {};
 {
 	if (!isPlayer _x && {(vehicleVarName _x) select [0,8] == "VehStore"}) then
 	{

@@ -8,6 +8,10 @@ private ["_obj", "_class"];
 _obj = _this;
 _class = typeOf _obj;
 
+// Crates also appear in the base-part allowlist; boxSaving=0 alone does not exclude that path.
+if (["A3W_scavengerMode"] call isConfigOn &&
+	{_obj getVariable ["A3W_scavengerObject", false] || _obj isKindOf "ReammoBox_F" || _obj isKindOf "StaticWeapon"}) exitWith { false };
+
 #include "functions.sqf"
 
 (alive _obj &&

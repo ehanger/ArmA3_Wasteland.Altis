@@ -6,6 +6,8 @@
 //	@file Author: [404] Deadbeat, [404] Costlyy, [GoT] JoSchaap
 //	@file Args:
 
+if (["A3W_scavengerMode"] call isConfigOn) exitWith {};
+
 _radius = 70; // also defined in client\items\artillery\artilleryMapClick.sqf
 _status = [];
 _gunStores = [];

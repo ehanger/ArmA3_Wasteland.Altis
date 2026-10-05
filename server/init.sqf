@@ -118,6 +118,12 @@ else
 	diag_log "[WARNING] For more information go to http://forums.a3wasteland.com/";
 };
 
+// Apply after external settings so legacy spawners/persistence cannot duplicate scavenged equipment.
+if (["A3W_scavengerMode"] call isConfigOn) then
+{
+	call compile preprocessFileLineNumbers "server\scavenging\rules.sqf";
+};
+
 if (isServer) then
 {
 	// compileFinal & broadcast client config variables
@@ -128,6 +134,7 @@ if (isServer) then
 	forEach
 	[
 		"A3W_startingMoney",
+		"A3W_scavengerMode",
 		"A3W_showGunStoreStatus",
 		"A3W_gunStoreIntruderWarning",
 		"A3W_playerSaving",
@@ -508,6 +515,11 @@ if (["A3W_serverSpawning"] call isConfigOn) then
 	if (["A3W_boxSpawning"] call isConfigOn) then
 	{
 		call compile preprocessFileLineNumbers "server\functions\boxSpawning.sqf";
+	};
+
+	if (["A3W_scavengerMode"] call isConfigOn) then
+	{
+		call compile preprocessFileLineNumbers "server\scavenging\spawn.sqf";
 	};
 
 	if (["A3W_vehicleSpawning"] call isConfigOn || ["A3W_boatSpawning"] call isConfigOn) then

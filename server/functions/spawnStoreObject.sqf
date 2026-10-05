@@ -20,6 +20,13 @@ _isGenStore = ["GenStore", _npcName] call fn_startsWith;
 _isGunStore = ["GunStore", _npcName] call fn_startsWith;
 _isVehStore = ["VehStore", _npcName] call fn_startsWith;
 
+// Enforce on the server too: direct object requests cannot bypass closed equipment stores.
+if (["A3W_scavengerMode"] call isConfigOn && {_isGunStore || _isVehStore ||
+	{_class isKindOf "LandVehicle" || _class isKindOf "Air" || _class isKindOf "Ship" || _class isKindOf "StaticWeapon"}}) exitWith
+{
+	if (_key != "" && !isNull _player) then { _player setVariable [_key, "", true] };
+};
+
 private _storeNPC = missionNamespace getVariable [_npcName, objNull];
 private _marker = _npcName;
 

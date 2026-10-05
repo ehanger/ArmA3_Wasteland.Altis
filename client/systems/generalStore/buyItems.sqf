@@ -36,6 +36,13 @@ storePurchaseHandle = _this spawn
 	_itemText = _itemlist lbText _itemIndex;
 	_itemData = _itemlist lbData _itemIndex;
 
+	// General supplies remain purchasable, but assembled UAV/turret backpacks must be scavenged.
+	if (["A3W_scavengerMode"] call isConfigOn &&
+		{getText (configFile >> "CfgVehicles" >> _itemData >> "assembleInfo" >> "assembleTo") != ""}) exitWith
+	{
+		hint "Scavenge UAVs and weapon backpacks from supply crates.";
+	};
+
 	_showInsufficientFundsError =
 	{
 		_itemText = _this select 0;

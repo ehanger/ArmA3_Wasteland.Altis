@@ -10,6 +10,8 @@
 #include "dialog\vehiclestoreDefines.hpp";
 disableSerialization;
 
+if (["A3W_scavengerMode"] call isConfigOn) exitWith { hint "Vehicle stores are closed. Scavenge vehicles around the island." };
+
 vehicleStore_noBuzzard = false;
 
 private ["_vehshopDialog", "_Dialog", "_playerMoney", "_owner", "_landButton", "_armorButton", "_tankButton", "_heliButton", "_planeButton", "_boatButton", "_subButton"];

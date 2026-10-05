@@ -8,6 +8,8 @@
 
 scriptName "buyVehicles";
 
+if (["A3W_scavengerMode"] call isConfigOn) exitWith { hint "Scavenge vehicles around the island." };
+
 if (!isNil "storePurchaseHandle" && {typeName storePurchaseHandle == "SCRIPT"} && {!scriptDone storePurchaseHandle}) exitWith {hint "Please wait, your previous purchase is being processed"};
 
 if (!isNil "vehicleStore_lastPurchaseTime") then

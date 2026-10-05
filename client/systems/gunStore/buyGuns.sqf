@@ -7,6 +7,7 @@
 //	@file Created: 20/11/2012 05:13
 //	@file Args: [int (0 = buy to player 1 = buy to crate)]
 
+if (["A3W_scavengerMode"] call isConfigOn) exitWith { hint "Scavenge weapons and ammunition from supply crates." };
 if (!isNil "storePurchaseHandle" && {typeName storePurchaseHandle == "SCRIPT"} && {!scriptDone storePurchaseHandle}) exitWith {hint "Please wait, your previous purchase is being processed"};
 
 #include "dialog\gunstoreDefines.sqf";
