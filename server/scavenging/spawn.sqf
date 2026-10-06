@@ -20,6 +20,39 @@ A3W_scavengerLand = [];
 A3W_scavengerShore = [];
 A3W_scavengerObjects = [];
 A3W_scavengerFailures = [];
+A3W_scavengerSectorColumns = ceil (worldSize / A3W_scavengerSectorSize);
+A3W_scavengerSectors = [];
+A3W_scavengerTownCounts = A3W_scavengerTowns apply { [0, 0] };
+// Each sector holds [land anchors, shore anchors, airfield markers, vehicles, crates].
+for "_i" from 1 to (A3W_scavengerSectorColumns * A3W_scavengerSectorColumns) do
+{
+	A3W_scavengerSectors pushBack [[], [], [], 0, 0];
+};
+private _sectorIndex =
+{
+	floor ((_this select 0) / A3W_scavengerSectorSize) +
+		floor ((_this select 1) / A3W_scavengerSectorSize) * A3W_scavengerSectorColumns
+};
+{
+	((A3W_scavengerSectors select ((markerPos _x) call _sectorIndex)) select 2) pushBack _x;
+} forEach A3W_scavengerAirfields;
+private _recordPlacement =
+{
+	params ["_object", "_location", "_crate"];
+	private _sector = (_location select 0) call _sectorIndex;
+	private _counts = A3W_scavengerSectors select _sector;
+	private _column = if (_crate) then { 4 } else { 3 };
+	_counts set [_column, (_counts select _column) + 1];
+	_object setVariable ["A3W_scavengerSector", _sector];
+	private _town = _location select 3;
+	if (_town >= 0) then
+	{
+		_counts = A3W_scavengerTownCounts select _town;
+		_column = if (_crate) then { 1 } else { 0 };
+		_counts set [_column, (_counts select _column) + 1];
+		_object setVariable ["A3W_scavengerTown", _town];
+	};
+};
 
 // Sample the whole island once instead of repeatedly searching the sea that surrounds Altis.
 // Shore anchors are land points with nearby water; spawned boats stay within 160 m of land.
@@ -31,9 +64,15 @@ for "_xPos" from 100 to (worldSize - 100) step 200 do
 		if (!surfaceIsWater _point) then
 		{
 			A3W_scavengerLand pushBack _point;
+			((A3W_scavengerSectors select (_point call _sectorIndex)) select 0) pushBack _point;
 			{
 				private _water = _point getPos [100, _x];
-				if (surfaceIsWater _water) then { A3W_scavengerShore pushBack [_water, _x] };
+				if (surfaceIsWater _water && {(_water select 0) >= 0} && {(_water select 1) >= 0} &&
+					{(_water select 0) < worldSize} && {(_water select 1) < worldSize}) then
+				{
+					A3W_scavengerShore pushBack [_water, _x];
+					((A3W_scavengerSectors select (_water call _sectorIndex)) select 1) pushBack [_water, _x];
+				};
 			} forEach [0,45,90,135,180,225,270,315];
 		};
 	};
@@ -107,6 +146,7 @@ private _indoorCount = 0;
 			};
 			_vehicle spawn { sleep 3; _this allowDamage true };
 			A3W_scavengerObjects pushBack _vehicle;
+			[_vehicle, _location, false] call _recordPlacement;
 			_spawned = _spawned + 1;
 		}
 		else
@@ -144,6 +184,7 @@ private _indoorCount = 0;
 			_box setVariable ["A3W_skipAutoSave", true, true];
 			[_box, _faction, _loadout] call _fillCrate;
 			A3W_scavengerObjects pushBack _box;
+			[_box, _location, true] call _recordPlacement;
 			_crateCount = _crateCount + 1;
 			if (_indoors) then { _indoorCount = _indoorCount + 1 };
 		}
@@ -156,4 +197,4 @@ private _indoorCount = 0;
 	};
 } forEach A3W_scavengerCrates;
 
-diag_log format ["[SCAVENGER] Complete: %1/660 vehicles, %2/500 crates (%3 indoors), %4 failures. No replenishment until restart.", _vehicleCount, _crateCount, _indoorCount, count A3W_scavengerFailures];
+diag_log format ["[SCAVENGER] Complete: %1/1000 vehicles, %2/500 crates (%3 indoors), %4 failures. No replenishment until restart.", _vehicleCount, _crateCount, _indoorCount, count A3W_scavengerFailures];

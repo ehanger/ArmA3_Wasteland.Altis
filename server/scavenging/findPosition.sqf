@@ -1,17 +1,57 @@
-// Returns [ATL/ASL-water position, direction, indoors] or [] on exhausted search.
+// Returns [ATL/ASL-water position, direction, indoors, town index] or [] on exhausted search.
 // Called in the scheduled startup script; never falls back to an unsafe map-centre position.
 params ["_kind", "_class", ["_crate", false]];
 private _radius = if (_crate) then { 1.2 } else { (sizeOf _class * 0.6) max 3 };
-private _gradient = if (_class isKindOf "Air") then { 0.08 } else { 0.18 };
+private _gradient = if (_class isKindOf "Air") then { 0.08 } else { if (_crate) then { 0.35 } else { 0.25 } };
 private _result = [];
+private _mode = _kind;
+if (_mode == "developed") then { _mode = "settlement" };
+private _countColumn = if (_crate) then { 4 } else { 3 };
+private _limit = if (_crate) then { A3W_scavengerSectorCrateLimit } else { A3W_scavengerSectorVehicleLimit };
+private _spacing = if (_crate) then { A3W_scavengerCrateSpacing } else { A3W_scavengerVehicleSpacing };
+private _areas = [];
+if (_mode == "settlement") then
+{
+	{
+		_areas pushBack [_x select (if (_crate) then { 1 } else { 0 }), random 1, _forEachIndex];
+	} forEach A3W_scavengerTownCounts;
+}
+else
+{
+	private _anchorColumn = switch (_mode) do
+	{
+		case "shore": { 1 };
+		case "airfield": { 2 };
+		default { 0 };
+	};
+	{
+		if (count (_x select _anchorColumn) > 0 && {(_x select _countColumn) < _limit}) then
+		{
+			_areas pushBack [_x select _countColumn, random 1, _forEachIndex];
+		};
+	} forEach A3W_scavengerSectors;
+};
+// Random ties avoid west-to-east bias; counts favor areas not populated yet.
+_areas sort true;
+if (_areas isEqualTo []) exitWith { [] };
+// Reserve attempts for every area: unsuitable empty sectors must not consume
+// the whole budget and permanently hide viable areas later in the sorted list.
+private _areaAttempts = A3W_scavengerAreaAttempts min ((floor (A3W_scavengerPositionAttempts / count _areas)) max 1);
+private _areaCursor = 0;
+private _area = -1;
+private _townIndex = -1;
 
 for "_attempt" from 1 to A3W_scavengerPositionAttempts do
 {
+	if ((_attempt - 1) mod _areaAttempts == 0) then
+	{
+		_area = (_areas select (_areaCursor mod count _areas)) select 2;
+		_areaCursor = _areaCursor + 1;
+	};
+	if (_area < 0) exitWith {};
 	private _pos = [];
 	private _dir = random 360;
 	private _indoor = false;
-	private _mode = _kind;
-	if (_mode == "developed") then { _mode = selectRandom ["settlement", "settlement", "airfield"] };
 
 	switch (_mode) do
 	{
@@ -19,16 +59,18 @@ for "_attempt" from 1 to A3W_scavengerPositionAttempts do
 		{
 			if !(A3W_scavengerAirfields isEqualTo []) then
 			{
-				private _marker = selectRandom A3W_scavengerAirfields;
+				private _marker = selectRandom ((A3W_scavengerSectors select _area) select 2);
 				_pos = (markerPos _marker) getPos [random 100, random 360];
 				_dir = markerDir _marker;
 			};
 		};
 		case "settlement":
 		{
-			private _town = selectRandom A3W_scavengerTowns;
+			_townIndex = _area;
+			private _town = A3W_scavengerTowns select _townIndex;
 			private _centre = markerPos (_town select 0);
-			private _range = (_town select 1) / 2;
+			// Include usable outskirts instead of rejecting cramped village centres.
+			private _range = ((_town select 1) / 2) max 180;
 			_pos = _centre getPos [sqrt random 1 * _range, random 360];
 			if (_crate && {random 1 < A3W_scavengerIndoorChance}) then
 			{
@@ -72,14 +114,14 @@ for "_attempt" from 1 to A3W_scavengerPositionAttempts do
 		{
 			if !(A3W_scavengerShore isEqualTo []) then
 			{
-				private _edge = selectRandom A3W_scavengerShore;
+				private _edge = selectRandom ((A3W_scavengerSectors select _area) select 1);
 				_pos = (_edge select 0) getPos [20 + random 40, _edge select 1];
 				_dir = _edge select 1;
 			};
 		};
 		default
 		{
-			_pos = (selectRandom A3W_scavengerLand) getPos [random 180, random 360];
+			_pos = (selectRandom ((A3W_scavengerSectors select _area) select 0)) getPos [sqrt random 1 * 140, random 360];
 			if (_mode == "road") then
 			{
 				private _roads = _pos nearRoads 200;
@@ -121,14 +163,15 @@ for "_attempt" from 1 to A3W_scavengerPositionAttempts do
 			};
 			if (_valid && _mode == "field") then
 			{
-				_valid = count (nearestTerrainObjects [_pos, ["TREE", "SMALL TREE", "BUSH", "HOUSE", "BUILDING", "ROCK", "ROCKS"], _radius max 40, false, true]) == 0 &&
-					{count (_pos nearRoads 35) == 0} &&
+				// Actual footprint clearance is checked below; a 40 m vegetation-free
+				// circle excluded most countryside and concentrated objects on salt flats.
+				_valid = count (_pos nearRoads 10) == 0 &&
 					{A3W_scavengerTowns findIf {_pos distance2D markerPos (_x select 0) < ((_x select 1) / 2 + 80)} == -1} &&
 					{A3W_scavengerAirfields findIf {_pos distance2D markerPos _x < 300} == -1};
 			};
 			if (_valid && _mode == "forest") then
 			{
-				_valid = count (nearestTerrainObjects [_pos, ["TREE", "SMALL TREE"], 45, false, true]) >= 8;
+				_valid = count (nearestTerrainObjects [_pos, ["TREE", "SMALL TREE"], 60, false, true]) >= 3;
 			};
 			if (_valid) then
 			{
@@ -140,8 +183,18 @@ for "_attempt" from 1 to A3W_scavengerPositionAttempts do
 			_valid = count (nearestObjects [_pos, ["AllVehicles", "ReammoBox_F", "Thing"], _radius + 5]) == 0;
 		};
 	};
+	if (_valid) then
+	{
+		private _sector = floor ((_pos select 0) / A3W_scavengerSectorSize) +
+			floor ((_pos select 1) / A3W_scavengerSectorSize) * A3W_scavengerSectorColumns;
+		// Check the actual position, not its anchor: roads/buildings can cross boundaries.
+		_valid = (_mode == "settlement" || {_sector == _area}) &&
+			{((A3W_scavengerSectors select _sector) select _countColumn) < _limit} &&
+			{A3W_scavengerObjects findIf
+				{!isNull _x && {(_x isKindOf "ReammoBox_F") == _crate} && {_x distance2D _pos < _spacing}} == -1};
+	};
 	// Avoid spawning directly on players, including during a long startup.
-	if (_valid && {allPlayers findIf {_x distance2D _pos < 50} == -1}) exitWith { _result = [_pos, _dir, _indoor] };
+	if (_valid && {allPlayers findIf {_x distance2D _pos < 50} == -1}) exitWith { _result = [_pos, _dir, _indoor, _townIndex] };
 	if (_attempt mod 20 == 0) then { sleep 0.001 };
 };
 
